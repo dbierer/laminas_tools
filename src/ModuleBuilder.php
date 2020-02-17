@@ -2,28 +2,8 @@
 // this tool creates a Laminas modules
 namespace Phpcl\LaminasTools;
 
-class ModuleBuilder
+class ModuleBuilder extends Base
 {
-    protected $module;      // name of the module
-    protected $config;
-    protected $output = '';
-
-    /**
-     * @param string $module == name of the module to be created
-     * @param array $config == templates and how to inject module into list of modules for this app
-     */
-    public function __construct(string $module, array $config)
-    {
-        $this->module = $module;
-        $this->config = $config;
-    }
-    /**
-     * @return string $output + "\n"
-     */
-    public function getOutput()
-    {
-        return $this->output . PHP_EOL;
-    }
     /**
      * Creates everything needed for a Laminas/ZF3 module
      *
@@ -39,8 +19,8 @@ class ModuleBuilder
         if (!file_exists($modBase)) mkdir($modBase);
         // write template contents out to appropriate file
         foreach ($this->config['templates'] as $key => $info) {
-            // no need to add new route for new module
-            if ($key == 'route') continue;
+            // no need any elements with no "path" (e.g. route,
+            if (empty($info['path'])) continue;
             // otherwise, carry on
             $this->output .= 'Creating structures for ' . $key . "\n";
             $base = $modBase;

@@ -2,29 +2,10 @@
 // this tool creates a Laminas modules
 namespace Phpcl\LaminasTools;
 
-class ControllerBuilder
+class ControllerBuilder extends Base
 {
-    protected $module;      // name of the module that hosts the new controller
     protected $controller;  // name of the controller to build
-    protected $config;
-    protected $output = '';
 
-    /**
-     * @param string $module == name of the module to be created
-     * @param array $config == templates and how to inject module into list of modules for this app
-     */
-    public function __construct(string $module, array $config)
-    {
-        $this->module = $module;
-        $this->config = $config;
-    }
-    /**
-     * @return string $output + "\n"
-     */
-    public function getOutput()
-    {
-        return $this->output . PHP_EOL;
-    }
     /**
      * Creates everything needed for a Laminas/ZF3 controller
      *
