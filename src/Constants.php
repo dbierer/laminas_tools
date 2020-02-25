@@ -10,7 +10,8 @@ class Constants
                 . '    PATH = absolute path to base of your project structure' . "\n"
                 . '    NAME = name of the new module to create or ' . "\n"
                 . '           class name of the controller (e.g. "Test\\\Controller\\\ListController") or ' . "\n"
-                . '           class name of the generic factory (e.g. "Test\\\Service\\\CoolServiceFactory")' . "\n";
+                . '           class name of the generic factory (e.g. "Test\\\Service\\\CoolServiceFactory")' . "\n"
+                . '    More information: https://github.com/phpcl/laminas_tools' . "\n";
 
     const BUILD_WHAT   = ['module','controller','factory'];
     const ERROR_WHAT   = 'ERROR: "WHAT" param needs to be one of %s';
