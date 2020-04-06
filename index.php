@@ -1,12 +1,25 @@
 <?php
 /**
- * This tool creates a Laminas MVC module
+ * CLI runner for PHP-CL Laminas Tools
  * @TODO: rewrite a Laminas Service Manager Tool
  * See namespace Laminas\ServiceManager\Tool\ {FactoryCreator,FactoryCreatorCommand};
  */
 
-// set up class for use
-require 'vendor/autoload.php';
+// load composer autoloader + use appropriate classes
+$classMap = [
+    'Phpcl\LaminasTools\Base' => __DIR__ . '/src/Base.php',
+    'Phpcl\LaminasTools\Validate' => __DIR__ . '/src/Validate.php',
+    'Phpcl\LaminasTools\Constants' => __DIR__ . '/src/Constants.php',
+    'Phpcl\LaminasTools\ModuleBuilder' => __DIR__ . '/src/ModuleBuilder.php',
+    'Phpcl\LaminasTools\FactoryBuilder' => __DIR__ . '/src/FactoryBuilder.php',
+    'Phpcl\LaminasTools\ControllerBuilder' => __DIR__ . '/src/ControllerBuilder.php',
+    'Phpcl\LaminasTools\InstallFollowup' => __DIR__ . '/src/InstallFollowup.php',
+];
+spl_autoload_register(function ($class) use ($classMap) {
+    if (isset($classMap[$class])) require_once $classMap[$class];
+});
+
+// use appropriate classes
 use Phpcl\LaminasTools\{Constants,ModuleBuilder,ControllerBuilder,FactoryBuilder,Validate};
 
 // init vars
