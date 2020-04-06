@@ -20,5 +20,10 @@
         "psr-4": {
             "Phpcl\\LaminasTools\\": "src"
         }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "Phpcl\\LaminasTools\\InstallFollowup::postInstall",
+        ],
     }
 }
