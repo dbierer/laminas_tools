@@ -1,11 +1,25 @@
 # Laminas Tools
 Tools to facilitate rapid app development using Laminas MVC.
 
+## Installation
+To get the latest version add the `--dev` flag.
+```
+composer require --dev phpcl/laminas-tools
+```
+Otherwise, specify your preferred version in the `composer.json` file:
+```
+{
+    "require" : {
+        "phpcl/laminas-tools" : "^1.0"
+        ... other config not specified
+    }
+    ... other config not specified
+}
+```
+and then run `composer install`.
+
 ## Usage
-From a command prompt or terminal window, change to the project root directory of your ZF 3 or Laminas MVC project and install the tools:
-```
-composer require phpcl/laminas-tools
-```
+From a command prompt or terminal window, change to the project root directory of your ZF 3 or Laminas MVC project.
 
 ### Linux
 ```

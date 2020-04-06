@@ -1,1 +1,1 @@
-php laminas-tools.phar $1 $2 $3
+php index.php $1 $2 $3

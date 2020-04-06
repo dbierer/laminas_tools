@@ -9,7 +9,7 @@ if (!$path || !file_exists($path)) {
 }
 
 // The php.ini setting phar.readonly must be set to 0
-$pharFile = 'laminas-tools.phar';
+$pharFile = 'phpcl-laminas-tools.phar';
 
 // clean up
 if (file_exists($pharFile)) {
@@ -55,7 +55,7 @@ foreach ($filter as $name => $obj) {
 $p->buildFromIterator(new ArrayIterator($list), $path);
 
 // pointing main file which requires all classes
-$p->setDefaultStub('cli/index.php');
+$p->setDefaultStub('index.php');
 
 // plus - compressing it into gzip
 $p->compress(Phar::GZ);

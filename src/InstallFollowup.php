@@ -23,10 +23,14 @@ class InstallFollowup
                 // otherwise, symlink to laminas-tools.sh
                 $toolExt = 'sh';
             }
-            // create symlink
-            $fileToLinkFrom = $myDir . '/laminas-tools.' . $toolExt;
-            $fileToLinkTo   = str_replace('//', '/', $vendorBin . '/phpcl-laminas-tools');
-            symlink($fileToLinkFrom, $fileToLinkTo);
+            // create symlink for tools script (*.sh or *.bat)
+            $from = $myDir . '/laminas-tools.' . $toolExt;
+            $to   = str_replace('//', '/', $vendorBin . '/phpcl-laminas-tools');
+            symlink($from, $to);
+            // create symlink for phar file
+            $from = $myDir . '/laminas-tools.phar';
+            $to   = str_replace('//', '/', $vendorBin . '/phpcl-laminas-tools.phar');
+            symlink($from, $to);
         }
     }
 }
