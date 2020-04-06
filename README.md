@@ -1,21 +1,20 @@
 # Laminas Tools
 Tools to facilitate rapid app development using Laminas MVC.
 
-## Setup
-Download `laminas-tools.zip`
-Unzip into the `vendor/bin` folder of your ZF 3 or Laminas MVC project.
-
 ## Usage
-Change to the project root directory of your ZF 3 or Laminas MVC project.
+From a command prompt or terminal window, change to the project root directory of your ZF 3 or Laminas MVC project and install the tools:
+```
+composer install phpcl/phpcl-laminas-tools
+```
 
 ### Linux
 ```
-vendor/bin/laminas-tools.sh WHAT PATH NAME
+vendor/bin/phpcl-laminas-tools WHAT PATH NAME
 ```
 
 ### Windows
 ```
-vendor/bin/laminas-tools.bat WHAT PATH NAME
+vendor/bin/phpcl-laminas-tools WHAT PATH NAME
 ```
 
 ### Params
@@ -28,11 +27,12 @@ vendor/bin/laminas-tools.bat WHAT PATH NAME
 |       | "Test\\\Factory\\\ListServiceFactory" | Name of the factory you want to create |
 
 ## Examples
+These examples assume you are running from a command prompt / terminal window, and have changed to the root directory of your project.
+
 ### Creating a Module
-As an example, to create a module "Test" on a Linux server
+As an example, to create a module "Test" on a Linux server:
 ```
-cd /path/to/project
-vendor/bin/laminas-tools.sh module `pwd` Test
+vendor/bin/phpcl-laminas-tools module `pwd` Test
 ```
 
 Here is what the tool does:
@@ -46,11 +46,8 @@ Here is what the tool does:
 
 ### Creating a Controller
 As an example, to create a controller "Test\Controller\ListController" on a Windows server:
-* First, open a command prompt
-* From the command prompt window, issue these commands.  If the project is on another drive, substitute that drive letter in place of `C:\`:
 ```
-cd C:\path\to\project
-vendor/bin/laminas-tools controller "C:\path\to\project" "Test\\Controller\\ListController"
+vendor/bin/phpcl-laminas-tools controller "C:\path\to\project" "Test\\Controller\\ListController"
 ```
 
 Here is what the tool does:
@@ -63,22 +60,17 @@ Here is what the tool does:
 ### Creating a Factory
 As an example, to create a factory "Test\Factory\ListServiceFactory" on a Linux server:
 ```
-cd /path/to/project
-vendor/bin/laminas-tools.sh factory `pwd` "Test\\Factory\\ListServiceFactory"
+vendor/bin/phpcl-laminas-tools factory `pwd` "Test\\Factory\\ListServiceFactory"
 ```
 
 The tool will then directly output the code for a generic factory named `ListServiceFactory`.  If you wish to pipe the output into a file, do this:
 ```
-cd /path/to/project
 mkdir module/Test/src/Factory
-vendor/bin/laminas-tools.sh factory `pwd` "Test\\Factory\\ListServiceFactory" >module/Test/src/Factory/ListServiceFactory.php
+vendor/bin/phpcl-laminas-tools.sh factory `pwd` "Test\\Factory\\ListServiceFactory" >module/Test/src/Factory/ListServiceFactory.php
 ```
 
 IMPORTANT:
-* If you wish to generate a factory for a specific class, use `vendor/bin/generate-factory-for-class` instead.
-* This tool can be used to create a factory if the `generate-factory-for-class` command fails.
-
-## TODO
-* Create RESTful controllers
-* Create handlers in Expressive / Mezzio
-
+* If you wish to generate a factory for a specific class, use the already-existing Laminas CLI tool `vendor/bin/generate-factory-for-class` instead.
+* The PHP-CL Laminas Tools can be used to create a factory if the `generate-factory-for-class` command fails, or if the factory class you wish to create does not have resolvable type-hints.
+* If you prefer, you can also simply download the file [`laminas-tools.phar`](https://github.com/phpcl/laminas_tools/raw/master/laminas-tools.phar)
+  * Usage is the same: follow the examples above, but substitute `php laminas-tools.phar` in place of `vendor/bin/phpcl-laminas-tools`

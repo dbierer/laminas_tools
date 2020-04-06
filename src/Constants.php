@@ -5,7 +5,7 @@ namespace Phpcl\LaminasTools;
 class Constants
 {
     const COMPOSER_JSON = 'composer.json';
-    const USAGE = 'Usage: php laminas-tool.phar WHAT PATH NAME' . "\n"
+    const USAGE = 'Usage: phpcl-laminas-tools WHAT PATH NAME' . "\n"
                 . '    WHAT = module | controller | factory' . "\n"
                 . '    PATH = absolute path to base of your project structure' . "\n"
                 . '    NAME = name of the new module to create or ' . "\n"
