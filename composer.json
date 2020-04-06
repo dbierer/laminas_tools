@@ -1,0 +1,24 @@
+{
+    "name": "phpcl/laminas-tools",
+    "type": "library",
+    "description": "Create modules, controllers, etc. for Laminas/ZF3 projects",
+    "keywords": ["phpcl","laminas","zf","zf3","zend framework"],
+    "homepage": "https://github.com/phpcl/laminas_tools",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Doug Bierer",
+            "email": "doug.bierer@etista.com",
+            "homepage": "https://php-cl.com/",
+            "role": "CTO"
+        }
+    ],
+    "require": {
+        "php": "^7.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Phpcl\\LaminasTools\\": "src"
+        }
+    }
+}

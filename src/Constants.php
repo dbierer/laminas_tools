@@ -6,11 +6,14 @@ class Constants
 {
     const COMPOSER_JSON = 'composer.json';
     const USAGE = 'Usage: php laminas-tool.phar WHAT PATH NAME' . "\n"
-                . '    WHAT = module | controller' . "\n"
+                . '    WHAT = module | controller | factory' . "\n"
                 . '    PATH = absolute path to base of your project structure' . "\n"
                 . '    NAME = name of the new module to create or ' . "\n"
-                . '           name of the controller (e.g. "Test\\\Controller\\\ListController")' . "\n";
-    const BUILD_WHAT   = ['module','controller'];
+                . '           class name of the controller (e.g. "Test\\\Controller\\\ListController") or ' . "\n"
+                . '           class name of the generic factory (e.g. "Test\\\Service\\\CoolServiceFactory")' . "\n"
+                . '    More information: https://github.com/phpcl/laminas_tools' . "\n";
+
+    const BUILD_WHAT   = ['module','controller','factory'];
     const ERROR_WHAT   = 'ERROR: "WHAT" param needs to be one of %s';
     const ERROR_DIR    = 'ERROR: missing or invalid directory path given';
     const ERROR_MOD    = 'ERROR: missing module name or module structure does not exist';

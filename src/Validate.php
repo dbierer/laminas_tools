@@ -48,6 +48,7 @@ class Validate
         $expected     = 3;  // expected args
         $moduleName   = '';
         $controller   = '';
+        $factory      = '';
         $ctlNameParts = [];
 
         // error if $what not on list
@@ -55,11 +56,16 @@ class Validate
         if (!in_array($what, Constants::BUILD_WHAT)) {
             self::$message .= sprintf(Constants::ERROR_WHAT, implode(',', Constants::BUILD_WHAT)) . "\n";
         } else {
-            // extract module name
+            // controller: extract module name
             if ($what == Constants::BUILD_WHAT[1]) {
                 $ctlNameParts = explode('\\', $name);
                 $moduleName   = $ctlNameParts[0];
                 $controller   = trim(array_pop($ctlNameParts));
+            // factory: assign name
+            } elseif ($what == Constants::BUILD_WHAT[2]) {
+                $ctlNameParts = explode('\\', $name);
+                $moduleName   = $ctlNameParts[0];
+                $factory      = $name;
             } else {
                 $moduleName = $name;
             }
@@ -102,7 +108,7 @@ class Validate
         }
 
         // store inputs
-        self::$inputs = [$what, $baseDir, $moduleName, $controller];
+        self::$inputs = [$what, $baseDir, $moduleName, $controller, $factory];
         return ($expected == $actual);
     }
 }
