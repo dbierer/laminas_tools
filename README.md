@@ -4,7 +4,7 @@ Tools to facilitate rapid app development using Laminas MVC.
 ## Usage
 From a command prompt or terminal window, change to the project root directory of your ZF 3 or Laminas MVC project and install the tools:
 ```
-composer install phpcl/phpcl-laminas-tools
+composer require phpcl/laminas-tools
 ```
 
 ### Linux
