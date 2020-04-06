@@ -23,7 +23,7 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "Phpcl\\LaminasTools\\InstallFollowup::postInstall",
+            "Phpcl\\LaminasTools\\InstallFollowup::postInstall"
         ],
     }
 }
