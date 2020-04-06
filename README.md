@@ -61,13 +61,13 @@ Here is what the tool does:
 ### Creating a Controller
 As an example, to create a controller "Test\Controller\ListController" on a Windows server:
 ```
-vendor/bin/phpcl-laminas-tools controller "C:\path\to\project" "Test\\Controller\\ListController"
+vendor/bin/phpcl-laminas-tools controller "\path\to\project" "Test\\Controller\\ListController"
 ```
 
 Here is what the tool does:
-* Creates a file `C:\path\to\project\module\Test\src\Controller\ListController.php`
-* Creates a view template `\C:\path\to\project\module\Test\view\test\list\index.phtml`
-* Creates a config file `C:\path\to\project\module\Test\config\module.config.php`
+* Creates a file `path\to\project\module\Test\src\Controller\ListController.php`
+* Creates a view template `path\to\project\module\Test\view\test\list\index.phtml`
+* Creates a config file `\path\to\project\module\Test\config\module.config.php`
   * Adds a route `/test-list[/:action]` (where `action` is the name of any additional `xxxAction()` methods created in the new controller)
   * Registers the new controller with the framework
 
@@ -83,7 +83,19 @@ mkdir module/Test/src/Factory
 vendor/bin/phpcl-laminas-tools.sh factory `pwd` "Test\\Factory\\ListServiceFactory" >module/Test/src/Factory/ListServiceFactory.php
 ```
 
-IMPORTANT:
+## Routes
+When you create a new module:
+* This route is defined for you: `/MODULE` where `MODULE` is the lower case name of the new module.
+  * Example: you add a new module `Test`.  The new route will be `/test`.
+* Any action methods added to the default controller `MODULE\Controller\IndexController` can be referenced using the name of the action method minus the suffix `Action`, all lowercase.
+  * Example: you add a method `public function demoAction() {}` to `IndexController` in the `Test` module.  The new route will be: `/test/demo`.
+When you create a new controller:
+* This route is defined for you: `/MODULE-CTRL_SHORT` where `MODULE` is the lower case name of the new module and `CTRL_SHORT` is the "short" name of the controller (class name minus the suffix `Controller`, all lower case)
+  * Example: you add a new controller `DemoController` to the `Test` module.  The new route will be: `/test-demo`.
+* Any action methods added to the new controller can be referenced using the name of the action method minus the suffix `Action`, all lowercase.
+  * Example: you add a method `public function whateverAction() {}` to `DemoController`.  The new route will be: `/test-demo/whatever`.
+
+## IMPORTANT
 * If you wish to generate a factory for a specific class, use the already-existing Laminas CLI tool `vendor/bin/generate-factory-for-class` instead.
 * The PHP-CL Laminas Tools can be used to create a factory if the `generate-factory-for-class` command fails, or if the factory class you wish to create does not have resolvable type-hints.
 * If you prefer, you can also simply download the file [`laminas-tools.phar`](https://github.com/phpcl/laminas_tools/raw/master/laminas-tools.phar)
