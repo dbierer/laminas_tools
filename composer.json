@@ -24,6 +24,15 @@
     "scripts": {
         "post-install-cmd": [
             "Phpcl\\LaminasTools\\InstallFollowup::postInstall"
+        ],
+        "post-update-cmd": [
+            "Phpcl\\LaminasTools\\InstallFollowup::postInstall"
+        ],
+        "post-package-install": [
+            "Phpcl\\LaminasTools\\InstallFollowup::postInstall"
+        ],
+        "post-package-update": [
+            "Phpcl\\LaminasTools\\InstallFollowup::postInstall"
         ]
     }
 }
