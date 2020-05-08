@@ -1,21 +1,22 @@
 <?php
 namespace Phpcl\LaminasTools;
-use Composer\Script\Event;
 /**
  * Used to followup on Composer installation
  */
 class InstallFollowup
 {
-    public static function postInstall(Event $event)
+    /**
+     * Creates symbolic links needed to run the tool
+     *
+     * @param string $vendorDir == location of the "vendor" folder
+     */
+    public static function createSymlinks(string $vendorDir)
     {
         // get directory for tools scripts
         $myDir = realpath(__DIR__ . '/..');
-        // get "vendor" dir
-        $vendorDir = $event->getComposer()->getConfig()->get('vendor-dir');
-        require $vendorDir . '/autoload.php';
         $vendorBin = str_replace('//', '/', $vendorDir . '/bin');
         if (file_exists($vendorBin)) {
-            $windows = PHP_WINDOWS_VERSION_MAJOR ?? FALSE;
+            $windows = (stripos(PHP_OS, 'WINNT') !== FALSE);
             // if Windows, symlink to laminas-tools.bat
             if ($windows) {
                 $toolExt = 'bat';
@@ -26,10 +27,12 @@ class InstallFollowup
             // create symlink for tools script (*.sh or *.bat)
             $from = $myDir . '/laminas-tools.' . $toolExt;
             $to   = str_replace('//', '/', $vendorBin . '/phpcl-laminas-tools');
+            if (file_exists($to)) unlink($to);
             symlink($from, $to);
             // create symlink for phar file
             $from = $myDir . '/laminas-tools.phar';
             $to   = str_replace('//', '/', $vendorBin . '/phpcl-laminas-tools.phar');
+            if (file_exists($to)) unlink($to);
             symlink($from, $to);
         }
     }

@@ -1,7 +1,7 @@
 {
     "name": "phpcl/laminas-tools",
     "type": "library",
-    "description": "Create modules, controllers, etc. for Laminas/ZF3 projects",
+    "description": "Create modules, controllers and factories for Laminas/ZF3 projects",
     "keywords": ["phpcl","laminas","zf","zf3","zend framework"],
     "homepage": "https://github.com/phpcl/laminas_tools",
     "license": "MIT",
@@ -21,9 +21,10 @@
             "Phpcl\\LaminasTools\\": "src"
         }
     },
-    "scripts": {
-        "post-install-cmd": [
-            "Phpcl\\LaminasTools\\InstallFollowup::postInstall"
-        ]
-    }
+    "autoload-dev": {
+        "psr-4": {
+            "Phpcl\\LaminasTools\\": "src"
+        }
+    },
+    "bin": ["bin/phpcl-laminas-tools","bin/phpcl-laminas-tools.phar"]
 }

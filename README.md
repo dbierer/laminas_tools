@@ -18,6 +18,17 @@ Otherwise, specify your preferred version in the `composer.json` file:
 ```
 and then run `composer install`.
 
+## Followup
+Have a look at the `vendor/bin` folder:
+```
+ls -l /path/to/project/vendor/bin
+```
+If you notice there are no links for `phpcl-laminas-tools`, run the following command:
+```
+cd /path/to/project
+php vendor/phpcl/laminas-tools/utils/create_links.php
+```
+
 ## Usage
 From a command prompt or terminal window, change to the project root directory of your ZF 3 or Laminas MVC project.
 
