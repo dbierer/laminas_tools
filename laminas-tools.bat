@@ -1,1 +1,0 @@
-php index.php $1 $2 $3

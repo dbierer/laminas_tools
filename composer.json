@@ -26,18 +26,5 @@
             "Phpcl\\LaminasTools\\": "src"
         }
     },
-    "scripts": {
-        "post-install-cmd": [
-            "Phpcl\\LaminasTools\\InstallFollowup::postInstall"
-        ],
-        "post-update-cmd": [
-            "Phpcl\\LaminasTools\\InstallFollowup::postUpdate"
-        ],
-        "post-package-install": [
-            "Phpcl\\LaminasTools\\InstallFollowup::postPackageInstall"
-        ],
-        "post-package-update": [
-            "Phpcl\\LaminasTools\\InstallFollowup::postPackageUpdate"
-        ]
-    }
+    "bin": ["bin/phpcl-laminas-tools","bin/phpcl-laminas-tools.phar"]
 }

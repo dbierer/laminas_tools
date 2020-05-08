@@ -1,59 +1,10 @@
 <?php
 namespace Phpcl\LaminasTools;
-use Composer\Script\Event;
 /**
  * Used to followup on Composer installation
  */
 class InstallFollowup
 {
-    public static function postInstall(Event $event)
-    {
-        try {
-            // get "vendor" dir
-            $vendorDir = $event->getComposer()->getConfig()->get('vendor-dir');
-            self::createSymlinks($vendorDir);
-        } catch (Throwable $t) {
-            error_log(__METHOD__ . ':' . get_class($t) . ':' . $t->getMessage());
-        } finally {
-            error_log(__METHOD__ . ':Method Was Called');
-        }
-    }
-    public static function postUpdate(Event $event)
-    {
-        try {
-            // get "vendor" dir
-            $vendorDir = $event->getComposer()->getConfig()->get('vendor-dir');
-            self::createSymlinks($vendorDir);
-        } catch (Throwable $t) {
-            error_log(__METHOD__ . ':' . get_class($t) . ':' . $t->getMessage());
-        } finally {
-            error_log(__METHOD__ . ':Method Was Called');
-        }
-    }
-    public static function postPackageInstall(Event $event)
-    {
-        try {
-            // get "vendor" dir
-            $vendorDir = $event->getComposer()->getConfig()->get('vendor-dir');
-            self::createSymlinks($vendorDir);
-        } catch (Throwable $t) {
-            error_log(__METHOD__ . ':' . get_class($t) . ':' . $t->getMessage());
-        } finally {
-            error_log(__METHOD__ . ':Method Was Called');
-        }
-    }
-    public static function postPackageUpdate(Event $event)
-    {
-        try {
-            // get "vendor" dir
-            $vendorDir = $event->getComposer()->getConfig()->get('vendor-dir');
-            self::createSymlinks($vendorDir);
-        } catch (Throwable $t) {
-            error_log(__METHOD__ . ':' . get_class($t) . ':' . $t->getMessage());
-        } finally {
-            error_log(__METHOD__ . ':Method Was Called');
-        }
-    }
     /**
      * Creates symbolic links needed to run the tool
      *
