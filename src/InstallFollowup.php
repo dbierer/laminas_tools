@@ -15,7 +15,7 @@ class InstallFollowup
         require $vendorDir . '/autoload.php';
         $vendorBin = str_replace('//', '/', $vendorDir . '/bin');
         if (file_exists($vendorBin)) {
-            $windows = PHP_WINDOWS_VERSION_MAJOR ?? FALSE;
+            $windows = (stripos(PHP_OS, 'WINNT') !== FALSE);
             // if Windows, symlink to laminas-tools.bat
             if ($windows) {
                 $toolExt = 'bat';
@@ -26,10 +26,12 @@ class InstallFollowup
             // create symlink for tools script (*.sh or *.bat)
             $from = $myDir . '/laminas-tools.' . $toolExt;
             $to   = str_replace('//', '/', $vendorBin . '/phpcl-laminas-tools');
+            unlink($to);
             symlink($from, $to);
             // create symlink for phar file
             $from = $myDir . '/laminas-tools.phar';
             $to   = str_replace('//', '/', $vendorBin . '/phpcl-laminas-tools.phar');
+            unlink($to);
             symlink($from, $to);
         }
     }
