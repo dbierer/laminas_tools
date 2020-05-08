@@ -1,8 +1,24 @@
 <?php
-require __DIR__ . '/vendor/autoload.php';
-use Phpcl\LaminasTools\InstallFollowup;
-use Composer\Script\Event;
-$class = new class () extends Event {
+function getVendorDir()
+{
+    $dir = '';
+    $single = DIRECTORY_SEPARATOR;
+    $double = DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR;
+    $breakdown = explode($single, __DIR__);
+    foreach ($breakdown as $key => $value) {
+        if ($value == 'vendor') break;
+        $dir .= $single . $value;
+    }
+    $dir = str_replace($double, $single, $dir . $single . 'vendor');
+    return $dir;
+}
+
+// get vendor directory
+define('VENDOR_DIR', getVendorDir());
+require VENDOR_DIR . '/autoload.php';
+
+try {
+    $class = new class () extends \Composer\Script\Event {
     public function __construct()
     {
         /* do nothing */
@@ -16,21 +32,21 @@ $class = new class () extends Event {
                 return new class () {
                     public function get($arg)
                     {
-                        $dir = '';
+                        $val = '';
                         if ($arg == 'vendor-dir') {
-                            $breakdown = explode(DIRECTORY_SEPARATOR, __DIR__);
-                            var_dump($breakdown);
-                            foreach ($breakdown as $key => $value) {
-                                if ($value == 'vendor') break;
-                                $dir .= DIRECTORY_SEPARATOR . $value;
-                            }
-                            $dir .= DIRECTORY_SEPARATOR . 'vendor';
+                            $val = VENDOR_DIR;
                         }
-                        return $dir;
+                        return $val;
                     }
                 };
             }
         };
     }
-};
-InstallFollowup::postInstall($class);
+    };
+    \Phpcl\LaminasTools\InstallFollowup::postInstall($class);
+} catch (Throwable $t) {
+    echo get_class($t) . ':' . $t->getMessage() . PHP_EOL;
+} finally {
+    echo "You need to run 'composer require composer/composer' before running this test\n";
+}
+
