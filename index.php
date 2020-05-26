@@ -13,14 +13,26 @@ $classMap = [
     'Phpcl\LaminasTools\ModuleBuilder' => __DIR__ . '/src/ModuleBuilder.php',
     'Phpcl\LaminasTools\FactoryBuilder' => __DIR__ . '/src/FactoryBuilder.php',
     'Phpcl\LaminasTools\ControllerBuilder' => __DIR__ . '/src/ControllerBuilder.php',
+    'Phpcl\LaminasTools\ControllerPluginBuilder' => __DIR__ . '/src/ControllerPluginBuilder.php',
+    'Phpcl\LaminasTools\ViewHelperBuilder' => __DIR__ . '/src/ViewHelperBuilder.php',
     'Phpcl\LaminasTools\InstallFollowup' => __DIR__ . '/src/InstallFollowup.php',
 ];
-spl_autoload_register(function ($class) use ($classMap) {
-    if (isset($classMap[$class])) require_once $classMap[$class];
-});
+spl_autoload_register(
+    function ($class) use ($classMap) {
+        if (isset($classMap[$class]))
+            require_once $classMap[$class];
+    }
+);
 
 // use appropriate classes
-use Phpcl\LaminasTools\{Constants,ModuleBuilder,ControllerBuilder,FactoryBuilder,Validate};
+use Phpcl\LaminasTools\{
+    Constants,
+    ModuleBuilder,
+    ControllerBuilder,
+    ControllerPluginBuilder,
+    ViewHelperBuilder,
+    FactoryBuilder,
+    Validate};
 
 // init vars
 $type       = '';
@@ -28,13 +40,13 @@ $success    = FALSE;
 $what       = '';
 $baseDir    = '';
 $moduleName = '';
-$controller = '';
-$factory    = '';
+$className  = '';
 
 if (Validate::checkInputs($argv)) {
-    list($what, $baseDir, $moduleName, $controller, $factory) = Validate::getInputs();
+    list($what, $baseDir, $moduleName, $className) = Validate::getInputs();
 } else {
     echo Validate::getMessage();
+    echo Constants::VERSION;
     echo Constants::USAGE;
     exit;
 }
@@ -57,62 +69,71 @@ if (empty($type)) {
 }
 
 try  {
-    // build module
-    if ($what == Constants::BUILD_WHAT[0]) {
-        $builder = new ModuleBuilder($moduleName, $config[$type]);
-        switch ($type) {
-            case 'zf3' :
-            case 'lam' :
-                $success = $builder->buildLamMvcModule($baseDir, $moduleName);
-                break;
-            default :
-                echo Constants::ERROR_TYPE . "\n";
-        }
-        echo $builder->getOutput();
-        if ($success) {
-            printf(Constants::SUCCESS_MSG, $moduleName) . "\n";
-            echo "\n" . Constants::MOD_REMINDER . "\n";
-            // run composer dump-autoload
-            chdir($baseDir);
-            if (file_exists('composer.phar')) {
-                shell_exec('php ' . $filename . ' dump-autoload');
+    switch ($what) {
+        // build module
+        case Constants::BUILD_WHAT['module'] :
+            $builder = new ModuleBuilder($moduleName, $config[$type]);
+            $success = $builder->build($baseDir, $moduleName);
+            echo $builder->getOutput();
+            if ($success) {
+                printf(Constants::SUCCESS_MSG, $moduleName) . "\n";
+                echo "\n" . Constants::MOD_REMINDER . "\n";
+                // run composer dump-autoload
+                chdir($baseDir);
+                if (file_exists('composer.phar')) {
+                    shell_exec('php ' . $filename . ' dump-autoload');
+                } else {
+                    shell_exec('composer dump-autoload');
+                }
+                echo "\n";
             } else {
-                shell_exec('composer dump-autoload');
+                printf(Constants::ERROR_UNABLE, $moduleName) . "\n";
             }
-            echo "\n";
-        } else {
-            printf(Constants::ERROR_UNABLE, $moduleName) . "\n";
-        }
-    // build controller
-    } elseif ($what == Constants::BUILD_WHAT[1]) {
-        $builder = new ControllerBuilder($moduleName, $config[$type]);
-        switch ($type) {
-            case 'zf3' :
-            case 'lam' :
-                $success = $builder->buildLamMvcController($baseDir, $moduleName, $controller);
-                break;
-            default :
-                echo Constants::ERROR_TYPE . "\n";
-        }
-        echo $builder->getOutput();
-        if ($success) {
-            printf(Constants::SUCCESS_MSG, $controller) . "\n";
-        } else {
-            printf(Constants::ERROR_UNABLE, $controller) . "\n";
-        }
-    // build factory
-    } elseif ($what == Constants::BUILD_WHAT[2]) {
-        $builder = new FactoryBuilder($moduleName, $config[$type]);
-        switch ($type) {
-            case 'zf3' :
-            case 'lam' :
-                $success = $builder->buildLamMvcFactory($baseDir, $factory);
-                break;
-            default :
-                echo Constants::ERROR_TYPE . "\n";
-        }
-        echo $builder->getOutput();
+            break;
+        // build controller
+        case Constants::BUILD_WHAT['controller'] :
+            $builder = new ControllerBuilder($moduleName, $config[$type]);
+            $success = $builder->build($baseDir, $moduleName, $className);
+            echo $builder->getOutput();
+            if ($success) {
+                printf(Constants::SUCCESS_MSG, $className) . "\n";
+            } else {
+                printf(Constants::ERROR_UNABLE, $className) . "\n";
+            }
+            break;
+        // build controller plugin
+        case Constants::BUILD_WHAT['controller-plugin'] :
+            $builder = new ControllerPluginBuilder($moduleName, $config[$type]);
+            $success = $builder->build($baseDir, $moduleName, $className);
+            echo $builder->getOutput();
+            if ($success) {
+                printf(Constants::SUCCESS_MSG, $builder->getClassName()) . "\n";
+            } else {
+                printf(Constants::ERROR_UNABLE, $className) . "\n";
+            }
+            break;
+        // build view helper
+        case Constants::BUILD_WHAT['view-helper'] :
+            $builder = new ViewHelperBuilder($moduleName, $config[$type]);
+            $success = $builder->build($baseDir, $moduleName, $className);
+            echo $builder->getOutput();
+            if ($success) {
+                printf(Constants::SUCCESS_MSG, $builder->getClassName()) . "\n";
+            } else {
+                printf(Constants::ERROR_UNABLE, $className) . "\n";
+            }
+            break;
+        // build factory
+        case Constants::BUILD_WHAT['factory'] :
+            $builder = new FactoryBuilder($moduleName, $config[$type]);
+            $success = $builder->build($baseDir, $className);
+            echo $builder->getOutput();
+            break;
+        default :
+            echo Validate::getMessage();
+            echo Constants::ERROR_TYPE . "\n";
     }
 } catch (Throwable $t) {
     printf(Constants::ERROR_MSG, get_class($t), $t->getMessage(), $t->getTraceAsString()) . "\n";
 }
+echo "\n";

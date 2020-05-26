@@ -45,11 +45,13 @@ vendor/bin/phpcl-laminas-tools WHAT PATH NAME
 ### Params
 | Param | Example | Description |
 | :---: | :-----: | :---------- |
-| WHAT  | "module","controller" or "factory" | Describes what component you want to build |
+| WHAT  | module | controller", "factory", "controller-plugin" or "view-helper" | Describes what component you want to build |
 | PATH  | "/path/to/project" | Full path to your project root directory |
 | NAME  | "Test"  | Name of the module you want to create, or |
 |       | "Test\\\Controller\\\ListController" | Name of the controller you want to create, or |
 |       | "Test\\\Factory\\\ListServiceFactory" | Name of the factory you want to create |
+|       | "Test\\\Controller\\\Plugin\\\NameOfPlugin" | Name of the controller plugin you want to create ("nameOf" becomes the alias) |
+|       | "Test\\\View\\\Helper\\\NameOfHelper" | Name of the view helper you want to create ("nameOf" becomes the alias) |
 
 ## Examples
 These examples assume you are running from a command prompt / terminal window, and have changed to the root directory of your project.
@@ -93,6 +95,32 @@ The tool will then directly output the code for a generic factory named `ListSer
 mkdir module/Test/src/Factory
 vendor/bin/phpcl-laminas-tools.sh factory `pwd` "Test\\Factory\\ListServiceFactory" >module/Test/src/Factory/ListServiceFactory.php
 ```
+
+### Creating a Controller Plugin
+As an example, to create a controller plugin "Test\Controller\Plugin\ReallyCoolPlugin" on a Linux:
+```
+vendor/bin/phpcl-laminas-tools controller-plugin `pwd` "Test\\Controller\\Plugin\\ReallyCoolPlugin"
+```
+
+Here is what the tool does:
+* Creates a file `path\to\project\module\Test\src\Controller\Plugin\ReallyCoolPlugin.php`
+* Adds to the module config file `\path\to\project\module\Test\config\module.config.php`
+  * Registers the new controller plugin with the framework under the `controller_plugins => factories` key
+  * Adds an alias `reallyCool` under  the `controller_plugins => aliases` key
+
+
+### Creating a View Helper
+As an example, to create a view helper "Test\View\Helper\ReallyCoolHelper" on a Linux:
+```
+vendor/bin/phpcl-laminas-tools view-helper `pwd` "Test\\View\\Helper\\ReallyCoolHelper"
+```
+
+Here is what the tool does:
+* Creates a file `path\to\project\module\Test\src\View\Helper\ReallyCoolHelper.php`
+* Adds to the module config file `\path\to\project\module\Test\config\module.config.php`
+  * Registers the new view helper with the framework under the `view_helpers => factories` key
+  * Adds an alias `reallyCool` under  the `view_helpers => aliases` key
+
 
 ## Routes
 When you create a new module:

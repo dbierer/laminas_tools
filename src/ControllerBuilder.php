@@ -13,7 +13,7 @@ class ControllerBuilder extends Base
      * @param string $moduleName == name of module to build
      * @param string $controller == name of controller to build
      */
-    public function buildLamMvcController(string $baseDir, string $moduleName, string $controller)
+    public function build(string $baseDir, string $moduleName, string $controller)
     {
 
         // create "short" names
@@ -70,55 +70,29 @@ class ControllerBuilder extends Base
         $modConf = str_replace('//', '/', $modConf);
         copy($modConf, $modConf . '.bak');
         $this->output .= 'Updating module config file' . "\n";
-        $contents = file_get_contents($modConf);
-        // add ref to InvokableFactory if not found
-        if (strpos($contents, 'InvokableFactory') === FALSE) {
-            $this->output .= 'Adding "use Laminas\ServiceManager\Factory\InvokableFactory;"' . "\n";
-            str_replace(
-                'return',
-                'use Laminas\ServiceManager\Factory\InvokableFactory;' . PHP_EOL . 'return',
-                $contents
-            );
-        }
-
         // inject controller registration
         $this->output .= 'Assigning new controller to "InvokableFactory"' . "\n";
-        $text = '            Controller\\' . $controller . '::class => InvokableFactory::class,';
-        $contents = $this->injectConfig('controllers', 'factories', $text, $contents);
-
+        $key = 'Controller\\' . $controller . '::class';
+        $val = 'InvokableFactory::class';
+        $contents = $this->injectConfig('controllers', 'factories', $key, $val, $modConf);
         // inject route
         $newRoute = '/' . $modShort . '-' . $ctlShort;
         $this->output .= sprintf('Adding route for new controller: %s', $newRoute) . "\n";
-        $text = $this->config['templates']['route']['template'];
-        $text = str_replace('%%SHORT_NAME%%', $ctlShort, $text);
-        $text = str_replace('IndexController', $controller, $text);
-        $contents = $this->injectConfig('router', 'routes', $text, $contents);
-
+        $route = $this->config['templates']['route']['template'];
+        $routeKey = str_replace(['%%MOD_SHORT%%','%%SHORT_NAME%%'], [$modShort,$ctlShort], $route['routeKey']);
+        $routeOpt = str_replace(['%%MOD_SHORT%%','%%SHORT_NAME%%'], [$modShort,$ctlShort], $route['routeOpt']);
+        $routeConfig = [
+            'type'    => $route['routeType'],
+            'options' => [
+                'route'    => $routeOpt,
+                'defaults' => [
+                    'controller' => $route['defController'],
+                    'action'     => $route['defAction'],
+                ],
+            ],
+        ];
+        $contents = $this->injectConfig('router', 'routes', $routeKey, $routeConfig, $modConf);
         // write out new config file
         return file_put_contents($modConf, $contents);
-    }
-    /**
-     * Injects module name into primary config file
-     *
-     * @param string $topKey = primary array key to search for
-     * @param string $subKey = secondary array key to search for
-     * @param string $text   = text to insert
-     * @param string $contents = original contents
-     * @return string $contents = modified contents
-     */
-    public function injectConfig(string $topKey, string $subKey, string $text, string $contents)
-    {
-        $pos = strpos($contents, $topKey);
-        $pos = strpos($contents, $subKey, $pos);
-        if (strpos($contents, 'array(', $pos) !== FALSE) {
-            $pos = strpos($contents, 'array(', $pos);
-        } else {
-            $pos = strpos($contents, '[', $pos);
-        }
-        $contents = substr($contents, 0, $pos + 1)
-                  . PHP_EOL
-                  . $text
-                  . substr($contents, $pos + 1);
-        return $contents;
     }
 }

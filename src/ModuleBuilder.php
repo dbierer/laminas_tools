@@ -11,7 +11,7 @@ class ModuleBuilder extends Base
      * @param string $moduleName == name of module to build
      * @return bool TRUE if OK | FALSE otherwise
      */
-    public function buildLamMvcModule(string $baseDir, string $moduleName)
+    public function build(string $baseDir, string $moduleName)
     {
         // make base directory for module
         $modBase = $this->config['base'];

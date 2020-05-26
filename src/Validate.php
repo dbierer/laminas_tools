@@ -47,27 +47,26 @@ class Validate
         $actual       = 0;    // actual valid args
         $expected     = 3;  // expected args
         $moduleName   = '';
-        $controller   = '';
-        $factory      = '';
+        $className    = '';
+        $mustSanitize = FALSE;
         $ctlNameParts = [];
 
         // error if $what not on list
         $what = strtolower($what);
-        if (!in_array($what, Constants::BUILD_WHAT)) {
-            self::$message .= sprintf(Constants::ERROR_WHAT, implode(',', Constants::BUILD_WHAT)) . "\n";
+        if (!isset(Constants::BUILD_WHAT[$what])) {
+            self::$message .= sprintf(Constants::ERROR_WHAT, implode(',', array_keys(Constants::BUILD_WHAT))) . "\n";
         } else {
             // controller: extract module name
-            if ($what == Constants::BUILD_WHAT[1]) {
-                $ctlNameParts = explode('\\', $name);
-                $moduleName   = $ctlNameParts[0];
-                $controller   = trim(array_pop($ctlNameParts));
-            // factory: assign name
-            } elseif ($what == Constants::BUILD_WHAT[2]) {
-                $ctlNameParts = explode('\\', $name);
-                $moduleName   = $ctlNameParts[0];
-                $factory      = $name;
-            } else {
+            if ($what == Constants::BUILD_WHAT['module']) {
                 $moduleName = $name;
+            } elseif ($what == Constants::BUILD_WHAT['factory']) {
+                $nameParts  = explode('\\', $name);
+                $moduleName = $nameParts[0];
+                $className  = $name;
+            } else {
+                $nameParts  = explode('\\', $name);
+                $moduleName = $nameParts[0];
+                $className  = trim(array_pop($nameParts));
             }
             $actual++;
         }
@@ -86,29 +85,53 @@ class Validate
             $actual++;
         }
 
-        // error if controller name missing
-        if ($what == Constants::BUILD_WHAT[1]) {
+        // sanitize class name for controller, controller-plugin or view-helper
+        switch ($what) {
+            case Constants::BUILD_WHAT['controller'] :
+                $suffix   = Constants::SUFFIX['controller'];
+                $errorMsg = Constants::ERROR_CTL_NM;
+                $outMsg   = Constants::MOD_CTL_NM;
+                $mustSanitize = TRUE;
+                break;
+            case Constants::BUILD_WHAT['controller-plugin'] :
+                $suffix   = Constants::SUFFIX['controller-plugin'];
+                $errorMsg = Constants::ERROR_PLG_NM;
+                $outMsg   = Constants::MOD_PLG_NM;
+                $mustSanitize = TRUE;
+                break;
+            case Constants::BUILD_WHAT['view-helper'] :
+                $suffix   = Constants::SUFFIX['view-helper'];
+                $errorMsg = Constants::ERROR_VHLP_NM;
+                $outMsg   = Constants::MOD_VHLP_NM;
+                $mustSanitize = TRUE;
+                break;
+            default ;
+                $mustSanitize = FALSE;
+        }
+
+        // sanitize class name for controller, controller-plugin or view-helper
+        if ($mustSanitize) {
             $expected++;
-            if (empty($controller)) {
-                self::$message .= Constants::ERROR_CTL . "\n";
+            if (empty($className)) {
+                self::$message .= $errorMsg . "\n";
             } else {
                 // sanitize controller name
-                $controller = ucfirst($controller);
-                $controller = str_replace('controller', 'Controller', $controller);
-                if ($controller == 'Controller') {
-                    self::$message .= Constants::ERROR_CTL_NM . "\n";
+                $className = ucfirst($className);
+                $className = str_ireplace($suffix, $suffix, $className);
+                if ($className == $suffix) {
+                    self::$message .= $errorMsg . "\n";
                 } else {
-                    if (substr($controller, -10) != 'Controller') {
-                        $controller .= 'Controller';
+                    if (substr($className, strlen($suffix)) != $suffix) {
+                        $className .= $suffix;
                     }
-                    self::$message .= sprintf(Constants::MOD_CTL_NM, $controller) . "\n";
+                    self::$message .= sprintf($outMsg, $className) . "\n";
                     $actual++;
                 }
             }
         }
 
         // store inputs
-        self::$inputs = [$what, $baseDir, $moduleName, $controller, $factory];
+        self::$inputs = [$what, $baseDir, $moduleName, $className];
         return ($expected == $actual);
     }
 }

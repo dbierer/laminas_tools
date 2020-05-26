@@ -12,25 +12,30 @@ class FactoryBuilder extends Base
      *
      * @TODO: write output to a file
      * @param string $baseDir == path to project
-     * @param string $factory == name of factory to build
+     * @param string $className == name of factory to build
      */
-    public function buildLamMvcFactory(string $baseDir, string $factory)
+    public function build(string $baseDir, string $factoryClass)
     {
         // get factory template
         $contents = $this->config['templates']['factory']['template'];
         // get namespace
-        $parts = explode('\\', $factory);
+        $parts = explode('\\', $factoryClass);
         $className = array_pop($parts);
         $namespace = implode('\\', $parts);
+        echo __METHOD__ . "\n";
+        var_dump($factoryClass, $parts, $className, $namespace);
+        echo "\n";
         // make sure $className has suffix "Factory"
         if (substr($className, -7) != 'Factory') $className .= 'Factory';
         // check to see if we need to use "Psr" or "Interop" \Container\ContainerInterface
         $psr = 'Psr';
-        if (file_exists(self::FACT_INTERFACE_PATH)) {
-            $interface = file_get_contents(self::FACT_INTERFACE_PATH);
-            if (stripos($interface, 'Interop\Container\ContainerInterface')) {
+        $checkFile = str_replace('//', '/', $baseDir . '/' . self::FACT_INTERFACE_PATH);
+        if (file_exists($checkFile)) {
+            $interface = file_get_contents($checkFile);
+            if (stripos($interface, 'use Interop\Container') !== FALSE) {
                 $psr = 'Interop';
             }
+            unset($interface);
         }
         // replace variable elements
         $contents = str_replace('%%NAMESPACE%%', $namespace, $contents);

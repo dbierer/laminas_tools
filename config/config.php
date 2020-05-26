@@ -3,6 +3,7 @@
 
 global $moduleName;
 global $baseDir;
+use Phpcl\LaminasTools\Constants;
 
 // module template
 $templates = [];
@@ -20,7 +21,6 @@ class Module
 EOT;
 
 // config file template
-$routeName = strtolower($moduleName);
 $templates['lam']['config'] = <<<EOT
 <?php
 declare(strict_types=1);
@@ -31,11 +31,11 @@ use Laminas\ServiceManager\Factory\InvokableFactory;
 return [
     'router' => [
         'routes' => [
-            '$routeName' => [
+            '$moduleName' => [
                 'type'    => Segment::class,
                 'options' => [
                     // add additional params to "route" key if needed
-                    'route'    => '/{$routeName}[/:action]',
+                    'route'    => '/{$moduleName}[/:action]',
                     'defaults' => [
                         'controller' => Controller\IndexController::class,
                         'action'     => 'index',
@@ -55,25 +55,21 @@ return [
 ];
 EOT;
 // route template
-$templates['lam']['route'] = <<<EOT
-            '{$routeName}-%%SHORT_NAME%%' => [
-                'type'    => Segment::class,
-                'options' => [
-                    // add additional params to "route" key if needed
-                    'route'    => '/{$routeName}-%%SHORT_NAME%%[/:action]',
-                    'defaults' => [
-                        'controller' => Controller\IndexController::class,
-                        'action'     => 'index',
-                    ],
-                ],
-            ],
-EOT;
+// MOD_SHORT == strtolower($modulename)
+$templates['lam']['route'] = [
+    'routeKey'     => "%%MOD_SHORT%%-%%SHORT_NAME%%",
+    'routeType'    => 'Segment::class',
+    'routeOpt'     => "/%%MOD_SHORT%%-%%SHORT_NAME%%[/:action]",
+    'defController'=> Controller\IndexController::class,
+    'defAction'    => 'index',
+];
 
 // controller template
+$namespace = Constants::CONTROLLER_NAMESPACE;
 $templates['lam']['controller'] = <<<EOT
 <?php
 declare(strict_types=1);
-namespace $moduleName\Controller;
+namespace {$moduleName}{$namespace};
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
 class IndexController extends AbstractActionController
@@ -112,6 +108,54 @@ class %%CLASSNAME%% implements FactoryInterface
 }
 EOT;
 
+// controller-plugin template
+$namespace = Constants::PLUGIN_NAMESPACE;
+$templates['lam']['controller-plugin'] = <<<EOT
+<?php
+namespace {$moduleName}{$namespace};
+use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
+class %%CLASSNAME%% extends AbstractPlugin
+{
+    /**
+     * Produces mixed output depending on logic you place inside __invoke()
+     *
+     * @param string \$param
+     * @param mixed \$default
+     * @return mixed
+     */
+    public function __invoke(\$param = null, \$default = null)
+    {
+        \$item = \$default;
+        // your code goes here
+        return \$item;
+    }
+}
+EOT;
+
+// view-helper template
+$namespace = Constants::HELPER_NAMESPACE;
+$templates['lam']['view-helper'] = <<<EOT
+<?php
+namespace {$moduleName}{$namespace};
+use Laminas\View\Helper\AbstractHtmlElement;
+class %%CLASSNAME%% extends AbstractHtmlElement
+{
+    /**
+     * Produces mixed output depending on logic you place inside __invoke()
+     *
+     * @param mixed \$param
+     * @param mixed \$default
+     * @return string \$item
+     */
+    public function __invoke(\$param = null, \$default = null)
+    {
+        \$item = \$default;
+        // your code goes here
+        return \$item;
+    }
+}
+EOT;
+
 // NOTE: any template elements with a "path" key will be added to a module
 // Laminas MVC
 $config['lam'] = [
@@ -143,10 +187,20 @@ $config['lam'] = [
             'path'  => '/src/Controller',
             'filename' => 'IndexController.php',
         ],
+        'controller-plugin' => [
+            'template' => $templates['lam']['controller-plugin'],
+            'path'  => '/src/Controller/Plugin',
+            'prefix' => 'Controller\Plugin',
+        ],
         'view' => [
             'template' => $templates['lam']['view'],
             'path'  => '/view/' . strtolower($moduleName) . '/index',
             'filename' => 'index.phtml',
+        ],
+        'view-helper' => [
+            'template' => $templates['lam']['view-helper'],
+            'path'  => '/src/View/Helper',
+            'prefix' => 'View\Helper',
         ],
         // this key is used when creating a new controller
         'route' => [
