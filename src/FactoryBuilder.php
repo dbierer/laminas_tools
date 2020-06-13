@@ -22,9 +22,6 @@ class FactoryBuilder extends Base
         $parts = explode('\\', $factoryClass);
         $className = array_pop($parts);
         $namespace = implode('\\', $parts);
-        echo __METHOD__ . "\n";
-        var_dump($factoryClass, $parts, $className, $namespace);
-        echo "\n";
         // make sure $className has suffix "Factory"
         if (substr($className, -7) != 'Factory') $className .= 'Factory';
         // check to see if we need to use "Psr" or "Interop" \Container\ContainerInterface

@@ -21,6 +21,7 @@ class Module
 EOT;
 
 // config file template
+$routeName = strtolower($moduleName);
 $templates['lam']['config'] = <<<EOT
 <?php
 declare(strict_types=1);
@@ -31,11 +32,11 @@ use Laminas\ServiceManager\Factory\InvokableFactory;
 return [
     'router' => [
         'routes' => [
-            '$moduleName' => [
+            '$routeName' => [
                 'type'    => Segment::class,
                 'options' => [
                     // add additional params to "route" key if needed
-                    'route'    => '/{$moduleName}[/:action]',
+                    'route'    => '/{$routeName}[/:action]',
                     'defaults' => [
                         'controller' => Controller\IndexController::class,
                         'action'     => 'index',
@@ -56,13 +57,19 @@ return [
 EOT;
 // route template
 // MOD_SHORT == strtolower($modulename)
-$templates['lam']['route'] = [
-    'routeKey'     => "%%MOD_SHORT%%-%%SHORT_NAME%%",
-    'routeType'    => 'Segment::class',
-    'routeOpt'     => "/%%MOD_SHORT%%-%%SHORT_NAME%%[/:action]",
-    'defController'=> Controller\IndexController::class,
-    'defAction'    => 'index',
-];
+$templates['lam']['route'] = <<<EOT
+[
+                'type'    => Segment::class,
+                'options' => [
+                    // add additional params to "route" key if needed
+                    'route'    => '/%%MOD_SHORT%%-%%SHORT_NAME%%[/:action]',
+                    'defaults' => [
+                        'controller' => %%CTL_SUFFIX%%\%%CONTROLLER%%::class,
+                        'action'     => 'index',
+                    ],
+                ],
+            ]
+EOT;
 
 // controller template
 $namespace = Constants::CONTROLLER_NAMESPACE;
@@ -187,15 +194,15 @@ $config['lam'] = [
             'path'  => '/src/Controller',
             'filename' => 'IndexController.php',
         ],
-        'controller-plugin' => [
-            'template' => $templates['lam']['controller-plugin'],
-            'path'  => '/src/Controller/Plugin',
-            'prefix' => 'Controller\Plugin',
-        ],
         'view' => [
             'template' => $templates['lam']['view'],
             'path'  => '/view/' . strtolower($moduleName) . '/index',
             'filename' => 'index.phtml',
+        ],
+        'controller-plugin' => [
+            'template' => $templates['lam']['controller-plugin'],
+            'path'  => '/src/Controller/Plugin',
+            'prefix' => 'Controller\Plugin',
         ],
         'view-helper' => [
             'template' => $templates['lam']['view-helper'],

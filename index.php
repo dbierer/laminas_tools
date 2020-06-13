@@ -54,7 +54,7 @@ if (Validate::checkInputs($argv)) {
 // pull in config
 $config = require 'config/config.php';
 
-// detect type
+// detect type (e.g. Laminas or ZF3)
 foreach ($config as $key => $value) {
     if (file_exists($value['config'])) {
         $type = $key;

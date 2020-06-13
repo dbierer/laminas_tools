@@ -16,8 +16,18 @@ class ControllerBuilder extends Base
     public function build(string $baseDir, string $moduleName, string $controller)
     {
 
+		// normalize controller name
+		$modPath = $this->config['templates']['module']['path'];
+		$ctlPath = $this->config['templates']['controller']['path'];
+		$ctlSuffix = str_replace($modPath, '', $ctlPath);
+		$ctlSuffix = ($ctlSuffix[0] == '/') ? substr($ctlSuffix, 1) : $ctlSuffix;
+		if (substr($controller, -10) != $ctlSuffix) {
+			$controller = str_replace($ctlSuffix, '', $controller);
+			$controller .= $ctlSuffix;
+		}
+
         // create "short" names
-        $ctlShort = strtolower(substr($controller, 0, -10));
+        $ctlShort = strtolower(str_replace($ctlSuffix, '', $controller));
         $modShort = strtolower($moduleName);
 
         // make base directory for controller
@@ -70,28 +80,21 @@ class ControllerBuilder extends Base
         $modConf = str_replace('//', '/', $modConf);
         copy($modConf, $modConf . '.bak');
         $this->output .= 'Updating module config file' . "\n";
+
         // inject controller registration
         $this->output .= 'Assigning new controller to "InvokableFactory"' . "\n";
-        $key = 'Controller\\' . $controller . '::class';
+        $key = $ctlSuffix . '\\' . $controller . '::class';
         $val = 'InvokableFactory::class';
         $contents = $this->injectConfig('controllers', 'factories', $key, $val, $modConf);
+
         // inject route
-        $newRoute = '/' . $modShort . '-' . $ctlShort;
+        $newRoute = $modShort . '-' . $ctlShort;
         $this->output .= sprintf('Adding route for new controller: %s', $newRoute) . "\n";
-        $route = $this->config['templates']['route']['template'];
-        $routeKey = str_replace(['%%MOD_SHORT%%','%%SHORT_NAME%%'], [$modShort,$ctlShort], $route['routeKey']);
-        $routeOpt = str_replace(['%%MOD_SHORT%%','%%SHORT_NAME%%'], [$modShort,$ctlShort], $route['routeOpt']);
-        $routeConfig = [
-            'type'    => $route['routeType'],
-            'options' => [
-                'route'    => $routeOpt,
-                'defaults' => [
-                    'controller' => $route['defController'],
-                    'action'     => $route['defAction'],
-                ],
-            ],
-        ];
-        $contents = $this->injectConfig('router', 'routes', $routeKey, $routeConfig, $modConf);
+        $routeOpts = $this->config['templates']['route']['template'];
+        $routeOpts = str_replace(['%%MOD_SHORT%%', '%%SHORT_NAME%%', '%%CTL_SUFFIX%%', '%%CONTROLLER%%'], 
+								[$modShort, $ctlShort, $ctlSuffix, $controller], 
+								$routeOpts);
+        $contents = $this->injectConfig('router', 'routes', $newRoute, $routeOpts, $modConf, $contents, TRUE);
         // write out new config file
         return file_put_contents($modConf, $contents);
     }

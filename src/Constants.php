@@ -29,6 +29,7 @@ class Constants
     const CONTROLLER_NAMESPACE = '\Controller';
     const PLUGIN_NAMESPACE     = '\Controller\Plugin';
     const HELPER_NAMESPACE     = '\View\Helper';
+    const ERROR_MODCFG = 'ERROR: unable to locate module config file';
     const ERROR_WHAT   = 'ERROR: "WHAT" param needs to be one of %s';
     const ERROR_DIR    = 'ERROR: missing or invalid directory path given';
     const ERROR_MOD    = 'ERROR: missing module name or module structure does not exist';
