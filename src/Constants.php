@@ -4,7 +4,7 @@ namespace Phpcl\LaminasTools;
 
 class Constants
 {
-    const VERSION = 'Version: 1.0.5' . "\n";
+    const VERSION = 'Version: 1.0.6' . "\n";
     const COMPOSER_JSON = 'composer.json';
     const USAGE = 'Usage:   phpcl-laminas-tools WHAT PATH NAME' . "\n"
                 . '    WHAT = module | controller | factory | controller-plugin | view-helper' . "\n"
