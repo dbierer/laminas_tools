@@ -11,14 +11,17 @@ class ModuleBuilder extends Base
      * @param string $moduleName == name of module to build
      * @return bool TRUE if OK | FALSE otherwise
      */
-    public function buildLamMvcModule(string $baseDir, string $moduleName)
+    public function build(string $baseDir, string $moduleName)
     {
         // make base directory for module
         $modBase = $this->config['base'];
         $modBase = str_replace('\\', '/', $modBase);
         if (!file_exists($modBase)) mkdir($modBase);
+        // list of elements to build
+        $needToBuild = ['module','config','controller','view'];
         // write template contents out to appropriate file
-        foreach ($this->config['templates'] as $key => $info) {
+        foreach ($needToBuild as $key) {
+			$info = $this->config['templates'][$key];
             // no need any elements with no "path" (e.g. route,
             if (empty($info['path'])) continue;
             // otherwise, carry on
@@ -34,7 +37,7 @@ class ModuleBuilder extends Base
             file_put_contents($filename, $info['template']);
         }
         // inject module into app primary config file
-        $this->injectConfig($moduleName);
+        $this->injectPrimaryConfig($moduleName);
         // add module to composer.json autoload key
         $jsonFile = $baseDir . '/' . Constants::COMPOSER_JSON;
         $this->injectComposerJson($jsonFile, $baseDir, $moduleName);
@@ -46,7 +49,7 @@ class ModuleBuilder extends Base
      * @param string $moduleName == name of module to build
      * @return bool output from `file_get_contents()` operation
      */
-    public function injectConfig(string $moduleName)
+    public function injectPrimaryConfig(string $moduleName)
     {
         $this->output .= 'Configuring module registration ' . "\n";
         // callback to inject module name into master config file

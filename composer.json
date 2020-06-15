@@ -1,7 +1,7 @@
 {
     "name": "phpcl/laminas-tools",
     "type": "library",
-    "description": "Create modules, controllers and factories for Laminas/ZF3 projects",
+    "description": "Create modules, controllers, controller-plugins, view helpers and factories for Laminas/ZF3 projects",
     "keywords": ["phpcl","laminas","zf","zf3","zend framework"],
     "homepage": "https://github.com/phpcl/laminas_tools",
     "license": "MIT",
