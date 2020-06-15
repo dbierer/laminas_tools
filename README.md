@@ -1,4 +1,4 @@
-# Laminas Tools
+# Laminas Tools v1.0.6
 Tools to facilitate rapid app development using Laminas MVC.
 
 ## Installation
