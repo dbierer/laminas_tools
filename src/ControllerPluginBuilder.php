@@ -60,7 +60,7 @@ class ControllerPluginBuilder extends Base
             'factories',
             $this->className . '::class',
             'InvokableFactory::class',
-            $modConf
+            $modConf,
         );
         $this->output .= "Assigning alias to new plugin: $alias\n";
         $contents = $this->injectConfig(
@@ -68,7 +68,9 @@ class ControllerPluginBuilder extends Base
             'aliases',
             $alias,
             $this->className . '::class',
-            $modConf
+            $modConf,
+            $contents,
+            TRUE
         );
         // write out new config file
         return file_put_contents($modConf, $contents);

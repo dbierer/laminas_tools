@@ -16,19 +16,14 @@ class ControllerBuilder extends Base
     public function build(string $baseDir, string $moduleName, string $controller)
     {
 
-		// normalize controller name
-		$modPath = $this->config['templates']['module']['path'];
-		$ctlPath = $this->config['templates']['controller']['path'];
-		$ctlSuffix = str_replace($modPath, '', $ctlPath);
-		$ctlSuffix = ($ctlSuffix[0] == '/') ? substr($ctlSuffix, 1) : $ctlSuffix;
-		if (substr($controller, -10) != $ctlSuffix) {
-			$controller = str_replace($ctlSuffix, '', $controller);
-			$controller .= $ctlSuffix;
-		}
-
-        // create "short" names
-        $ctlShort = strtolower(str_replace($ctlSuffix, '', $controller));
-        $modShort = strtolower($moduleName);
+		// pull in config info
+		$modPath   = $this->config['templates']['module']['path'];
+		$ctlPath   = $this->config['templates']['controller']['path'];
+		$ctlSuffix = Constants::SUFFIX['controller'];
+		
+		// create "short" names (for use in routes and view)
+        $modShort  = strtolower($moduleName);
+		$ctlShort  = strtolower(str_replace($ctlSuffix, '', $controller));
 
         // make base directory for controller
         $this->output .= 'Creating directory structures for new controller' . "\n";

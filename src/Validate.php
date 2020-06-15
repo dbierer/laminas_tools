@@ -115,15 +115,13 @@ class Validate
             if (empty($className)) {
                 self::$message .= $errorMsg . "\n";
             } else {
-                // sanitize controller name
+                // sanitize controller/plugin/view-helper name
                 $className = ucfirst($className);
-                $className = str_ireplace($suffix, $suffix, $className);
+                $className = str_replace($suffix, '', $className);
                 if ($className == $suffix) {
                     self::$message .= $errorMsg . "\n";
                 } else {
-                    if (substr($className, strlen($suffix)) != $suffix) {
-                        $className .= $suffix;
-                    }
+					$className .= $suffix;
                     self::$message .= sprintf($outMsg, $className) . "\n";
                     $actual++;
                 }

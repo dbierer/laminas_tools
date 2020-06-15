@@ -40,6 +40,7 @@ class Constants
     const ERROR_TYPE   = 'ERROR: unable to detect framework type';
     const ERROR_UNABLE = 'ERROR: unable to create %s';
     const ERROR_MSG    = 'ERROR: %s : %s' . PHP_EOL . '%s';
+    const ERROR_CFG_EOF= 'ERROR: module.config.php file must end with either "];" or "];"';
     const SUCCESS_MSG  = 'SUCCESS: %s created!';
     const MOD_CTL_NM   = 'Using "%s" for controller name';
     const MOD_PLG_NM   = 'Using "%s" for controller plugin name';

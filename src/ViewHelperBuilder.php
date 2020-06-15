@@ -71,7 +71,9 @@ class ViewHelperBuilder extends Base
             'aliases',
             $alias,
             $this->className . '::class',
-            $modConf
+            $modConf,
+            $contents,
+            TRUE
         );
 
         // write out new config file
