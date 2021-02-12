@@ -9,12 +9,12 @@
         {
             "name": "Doug Bierer",
             "email": "doug.bierer@etista.com",
-            "homepage": "https://php-cl.com/",
+            "homepage": "https://phptraining.net/",
             "role": "CTO"
         }
     ],
     "require": {
-        "php": "^7.1"
+        "php": ">=7.1"
     },
     "autoload": {
         "psr-4": {
